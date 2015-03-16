@@ -1,0 +1,11 @@
+extends ../layout
+
+block content
+	.movies-wrapper
+		ul.movies-list
+			each item in movies
+				li(data-id="#{item.id}")
+					a.img-link(href="/movie/#{item.id}")
+						img(src="#{item.poster}" width="100%")
+					h3.movie-title #{item.name}
+					a.movie-btn(href="/movie/#{item.id}") 立即前往
