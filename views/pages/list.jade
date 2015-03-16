@@ -1,4 +1,18 @@
 extends ../layout
 
 block content
-	.test #{title}
+	div.movies-wrapper
+		table
+			tr
+				th 电影
+				th 导演
+				th 地区
+				th 语言
+				th 操作
+			each item in movies
+				tr
+					td: a(href="/movie/#{item._id}" target="_blank") #{item.name}
+					td #{item.doctor}
+					td #{item.country}
+					td #{item.language}
+					td: a(href="/admin/update/#{item._id}") 编辑

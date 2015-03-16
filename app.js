@@ -2,9 +2,9 @@ var express = require('express');
 var port = process.env.PORT || 3000;
 var http = require('http');
 var path = require('path');
-var bodyParser = require('body-parser')
-var mongoose = require('mongoose')
-var Movie = require('./models/movie')
+var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var Movie = require('./models/movie');
 var app = express();
 
 mongoose.connect('mongodb://localhost/imovie')
@@ -13,30 +13,26 @@ app.set('views','./views/pages');
 app.set('view engine','jade');
 app.use(express.static(path.join(__dirname,'public')));
 
-app.use(bodyParser.urlencoded({ extended: true }))  
-app.use(bodyParser.json())  
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.get('/',function(req,res){
 	Movie.fetch(function(err,movies){
 		if(err){
-			console.log(err)
+			console.log(err);
 		}
 		res.render('index',{
-			title : 'Home Page',
+			title : '首页',
 			movies : movies
 		});
 	});
-	// res.render('index',{
-	// 	title : 'Home Page',
-	// 	movies : movies
-	// });
 });
 
 app.get('/movie/:id',function(req,res){
-	var id = req.params.id
+	var id = req.params.id;
 	Movie.findById(id,function(err,movie){
 		res.render('detail',{
-			title : 'Detail Page'
+			title : movie.name + ' 详情',
 			movie : movie
 		});
 	})
@@ -44,8 +40,14 @@ app.get('/movie/:id',function(req,res){
 });
 
 app.get('/admin/list',function(req,res){
-	res.render('list',{
-		title : 'List Page'
+	Movie.fetch(function(err,movies){
+		if(err){
+			console.log(err);
+		}
+		res.render('list',{
+			title : '列表',
+			movies : movies
+		});
 	});
 });
 
@@ -80,9 +82,9 @@ app.post('/admin/movie/new',function(req,res){
 	});
 	_movie.save(function(err,movie){
 		if(err){
-			console.log(err)
+			console.log(err);
 		}
-		//res.redirect('/movie/'+movie.id)
+		res.redirect('/movie/'+movie.id);
 	});
 })
 http.createServer(app).listen(3000);
