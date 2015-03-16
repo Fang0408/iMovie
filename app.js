@@ -86,4 +86,3 @@ app.post('/admin/movie/new',function(req,res){
 	});
 })
 http.createServer(app).listen(3000);
-//http.listen(port);
