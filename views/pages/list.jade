@@ -2,17 +2,37 @@ extends ../layout
 
 block content
 	div.movies-wrapper
-		table
-			tr
-				th 电影
-				th 导演
-				th 地区
-				th 语言
-				th 操作
-			each item in movies
+		if movies.length
+			table
 				tr
-					td: a(href="/movie/#{item._id}" target="_blank") #{item.name}
-					td #{item.doctor}
-					td #{item.country}
-					td #{item.language}
-					td: a(href="/admin/update/#{item._id}") 编辑
+					th 电影
+					th 导演
+					th 地区
+					th 语言
+					th 操作
+				each item in movies
+					tr(data-index="#{item._id}")
+						td: a(href="/movie/#{item._id}" target="_blank") #{item.name}
+						td #{item.doctor}
+						td #{item.country}
+						td #{item.language}
+						td
+							a(href="/admin/update/#{item._id}") 编辑
+							span &nbsp;|&nbsp;
+							a(href="javascript:void(0)" class="delete-btn") 删除
+
+	script(type="text/javascript").
+		$('.delete-btn').each(function(){
+			$(this).click(function(){
+				var thisMovie = $(this).parent().parent();
+				var index = thisMovie.attr('data-index');
+				$.ajax({
+					type : 'DELETE',
+					url : '/admin/movie/delete?id=' + index
+				}).done(function(data){
+					if(data.iRet == 0){
+						thisMovie.remove();
+					}
+				})
+			});
+		});
