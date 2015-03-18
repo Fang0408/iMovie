@@ -117,23 +117,43 @@ app.delete('/admin/movie/delete',function(req,res){
 	
 })
 app.post('/admin/movie/new',function(req,res){
-	var movie = req.body.movie;
+	var id = req.body.movie._id;
+	var movieObj = req.body.movie;
 	var _movie;
-	_movie = new Movie({
-		doctor : movie.doctor,
-		name : movie.name,
-		language : movie.language,
-		poster : movie.poster,
-		flash : movie.flash,
-		year : movie.year,
-		country : movie.country,
-		summary : movie.summary
-	});
-	_movie.save(function(err,movie){
-		if(err){
-			console.log(err);
-		}
-		res.redirect('/movie/'+movie.id);
-	});
+	if(id !== 'undefined'){
+		Movie.findById(id,function(err,movie){
+			if(err){
+				console.log(err)
+			}else{
+				for(var i in movieObj){
+					_movie[i] = movieObj[i]
+				}
+				_movie.save(function(err,movie){
+					if(err){
+						console.log(err)
+					}
+					res.redirect('/movie/'+movie._id);
+				});
+			}
+		})
+	}else{
+		_movie = new Movie({
+			doctor : movie.doctor,
+			name : movie.name,
+			language : movie.language,
+			poster : movie.poster,
+			flash : movie.flash,
+			year : movie.year,
+			country : movie.country,
+			summary : movie.summary
+		});
+		_movie.save(function(err,movie){
+			if(err){
+				console.log(err);
+			}
+			res.redirect('/movie/'+movie._id);
+		});
+	}
+	
 })
 http.createServer(app).listen(3000);
