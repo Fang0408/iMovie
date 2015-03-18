@@ -16,6 +16,7 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+//首页路由
 app.get('/',function(req,res){
 	Movie.fetch(function(err,movies){
 		if(err){
@@ -27,7 +28,7 @@ app.get('/',function(req,res){
 		});
 	});
 });
-
+//电影详情页路由
 app.get('/movie/:id',function(req,res){
 	var id = req.params.id;
 	Movie.findById(id,function(err,movie){
@@ -38,7 +39,19 @@ app.get('/movie/:id',function(req,res){
 	})
 	
 });
-
+//管理端电影列表页路由
+app.get('/admin',function(req,res){
+	Movie.fetch(function(err,movies){
+		if(err){
+			console.log(err);
+		}
+		res.render('list',{
+			title : '列表',
+			movies : movies
+		});
+	});
+});
+//管理端电影列表页路由
 app.get('/admin/list',function(req,res){
 	Movie.fetch(function(err,movies){
 		if(err){
@@ -63,10 +76,46 @@ app.get('/admin/movie',function(req,res){
 		summary : ''
 	}
 	res.render('new',{
-		title : 'New Page',
+		title : '新增影片',
 		movie : movie
 	});
 });
+app.get('/admin/update/:id',function(req,res){
+	var id = req.params.id;
+	if(id){
+		Movie.findById(id,function(err,movie){
+			if(err){
+				console.log(err)
+				res.redirect('/error')
+			}else{
+				res.render('new',{
+					title : movie.name + ' 编辑',
+					movie : movie
+				})
+			}
+			
+		})
+	}
+})
+app.get('/error',function(req,res){
+	res.render('error',{
+		title : '出错啦'
+	})
+})
+app.delete('/admin/movie/delete',function(req,res){
+	var id = req.query.id;
+	if(id){
+		Movie.remove({_id : id},function(err,movie){
+			if(err){
+				console.log(err);
+				res.json({iRet : -1});
+			}else{
+				res.json({iRet : 0});
+			}
+		})
+	}
+	
+})
 app.post('/admin/movie/new',function(req,res){
 	var movie = req.body.movie;
 	var _movie;
