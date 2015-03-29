@@ -4,29 +4,29 @@ block content
 	.form-wrapper
 		form(method="post" action="/admin/movie/new")
 			input(type="hidden" name="movie[_id]" value='#{movie._id}')
-			p
+			p.form-input
 				label(for="inputName") 电影名称
 				input(type="text" id="inputName" name="movie[name]" value='#{movie.name}' required)
-			p
+			p.form-input
 				label(for="inputDoctor") 电影导演
 				input(type="text" id="inputDoctor" name="movie[doctor]" value='#{movie.doctor}' required)
-			p
+			p.form-input
 				label(for="inputLanguage") 语言
 				input(type="text" id="inputLanguage" name="movie[language]" value='#{movie.language}' required)
-			p
+			p.form-input
 				label(for="inputCountry") 国家
 				input(type="text" id="inputCountry" name="movie[country]" value='#{movie.country}' required)
-			p
+			p.form-input
 				label(for="inputPoster") 海报地址
 				input(type="text" id="inputPoster" name="movie[poster]" value='#{movie.poster}' required)
-			p
+			p.form-input
 				label(for="inputFlash") 影片地址
 				input(type="text" id="inputFlash" name="movie[flash]" value='#{movie.flash}' required)
-			p
+			p.form-input
 				label(for="inputSummary") 影片摘要
 				input(type="text" id="inputSummary" name="movie[summary]" value='#{movie.summary}' required)
-			p
+			p.form-input
 				label(for="inputYear") 影片年份
 				input(type="text" id="inputYear" name="movie[year]" value='#{movie.year}' required)
-			p
+			p.form-input
 				input(type="submit" value="提交")
