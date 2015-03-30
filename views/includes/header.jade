@@ -3,3 +3,11 @@
 		li: a(href="/" title="首页") 首页
 		li: a(href="/admin/list" title="列表") 列表
 		li: a(href="/admin/movie/" title="新增") 新增电影
+	div.header-user-box
+		p
+			if user
+				span 欢迎您，#{user.name}
+				a(href="/logout" title="注销") 注销
+			else
+				a(href="/login" title="登录") 登录
+				a(href="/register" title="注册") 注册

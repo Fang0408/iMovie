@@ -8,7 +8,8 @@ ul,ol,li {
 body {
 	font-family: "Microsoft YaHei";
 }
-.header { 
+.header {
+	position: relative;
 	width: 100%;
 	min-width: 1000px;
 	height: 50px;
@@ -40,6 +41,17 @@ body {
 .header-menu>li>a:hover {
 	color: #000;
 	background: #888;
+}
+.header-user-box {
+	position: absolute;
+	width: 400px;
+	height: 50px;
+	line-height: 50px;
+	right: 0;
+	top: 0;
+}
+.header-user-box>p{
+	text-align: right;
 }
 .movies-wrapper, .movie-wrapper {
 	width: 1000px;

@@ -5,22 +5,37 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
+var mongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
 var Movie = require('./models/movie');
 var User = require('./models/user');
 var underscore = require('underscore');
 var app = express();
 
-mongoose.connect('mongodb://localhost/imovie')
+var DB_URL = 'mongodb://localhost/imovie';
+mongoose.connect(DB_URL)
 
 app.set('views','./views/pages');
 app.set('view engine','jade');
 app.use(express.static(path.join(__dirname,'public')));
 app.use(cookieParser());
-app.use(session({secret : 'iMovie'}));
+app.use(session({
+	secret : 'iMovie',
+	store : new mongoStore({
+		url : DB_URL,
+		collections : 'sessions'
+	})
+}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use(function(req,res,next){
+	var user = req.session.user;
+	if(user){
+		app.locals.user = user;
+	}
+	next()
+})
 //首页路由
 app.get('/',function(req,res){
 	Movie.fetch(function(err,movies){
@@ -55,6 +70,7 @@ app.get('/movie/:id',function(req,res){
 });
 //管理端电影列表页路由
 app.get('/admin',function(req,res){
+	checkUserLogin(req,res,app)
 	Movie.fetch(function(err,movies){
 		if(err){
 			console.log(err);
@@ -67,6 +83,7 @@ app.get('/admin',function(req,res){
 });
 //管理端电影列表页路由
 app.get('/admin/list',function(req,res){
+	checkUserLogin(req,res,app)
 	Movie.fetch(function(err,movies){
 		if(err){
 			console.log(err);
@@ -191,12 +208,13 @@ app.post('/login',function(req,res){
 						console.log(err)
 					}
 					if(isMatch){
-						console.log('login success');
+						req.session.user = user;
+						app.locals.user = user;
+						res.redirect('/admin')
 					}else{
-						console.log('login unsuccess')
+						res.redirect('/')
 					}
 				})
-				res.redirect('/')
 			}else{
 				res.redirect('/error')
 			}
@@ -218,4 +236,17 @@ app.post('/register',function(req,res){
 		res.redirect('/admin')
 	})
 })
+
+app.get('/logout',function(req,res){
+	delete req.session.user;
+	delete app.locals.user;
+	res.redirect('/');
+})
 http.createServer(app).listen(3000);
+
+function checkUserLogin(req,res,app){
+	var user = app.locals.user;
+	if(!user){
+		return res.redirect('/login');
+	}
+}
