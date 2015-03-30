@@ -5,6 +5,8 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var Movie = require('./models/movie');
+var User = require('./models/user');
+var underscore = require('underscore');
 var app = express();
 
 mongoose.connect('mongodb://localhost/imovie')
@@ -32,10 +34,19 @@ app.get('/',function(req,res){
 app.get('/movie/:id',function(req,res){
 	var id = req.params.id;
 	Movie.findById(id,function(err,movie){
-		res.render('detail',{
-			title : movie.name + ' 详情',
-			movie : movie
-		});
+		if(err){
+			console.log(err)
+		}
+		if(movie){
+			res.render('detail',{
+				title : movie.name + ' 详情',
+				movie : movie
+			});
+		}else{
+			res.redirect('/error')
+			return
+		}
+		
 	})
 	
 });
@@ -117,23 +128,63 @@ app.delete('/admin/movie/delete',function(req,res){
 	
 })
 app.post('/admin/movie/new',function(req,res){
-	var movie = req.body.movie;
+	var id = req.body.movie._id;
+	var movieObj = req.body.movie;
 	var _movie;
-	_movie = new Movie({
-		doctor : movie.doctor,
-		name : movie.name,
-		language : movie.language,
-		poster : movie.poster,
-		flash : movie.flash,
-		year : movie.year,
-		country : movie.country,
-		summary : movie.summary
-	});
-	_movie.save(function(err,movie){
-		if(err){
-			console.log(err);
-		}
-		res.redirect('/movie/'+movie.id);
-	});
+	if(id !== 'undefined'){
+		Movie.findById(id,function(err,movie){
+			if(err){
+				console.log(err)
+			}else{
+				_movie = underscore.extend(movie,movieObj)
+				_movie.save(function(err,movie){
+					if(err){
+						console.log(err)
+					}
+					res.redirect('/movie/'+movie._id);
+				});
+			}
+		})
+	}else{
+		_movie = new Movie({
+			doctor : movieObj.doctor,
+			name : movieObj.name,
+			language : movieObj.language,
+			poster : movieObj.poster,
+			flash : movieObj.flash,
+			year : movieObj.year,
+			country : movieObj.country,
+			summary : movieObj.summary
+		});
+		_movie.save(function(err,movie){
+			if(err){
+				console.log(err);
+			}
+			res.redirect('/movie/'+movie._id);
+		});
+	}
+})
+app.get('/login',function(req,res){
+	res.render('login',{
+		title : '登录'
+	})
+})
+
+app.post('/login',function(req,res){
+	var _user = req.body.user;
+	if(_user.email && _user.password){
+		User.findByEmail(_user.email,function(err,user){
+			if(err){
+				console.log(err)
+				return
+			}
+			if(user && user.password == _user.password){
+				console.log('ok')
+				res.redirect('/')
+			}else{
+				res.redirect('/error')
+			}
+		});
+	}
 })
 http.createServer(app).listen(3000);
