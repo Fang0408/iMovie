@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+	.register-wrapper
+		form(method="post" action="/register")
+			p.form-input
+				label(for="inputEmail") 邮箱
+				input(type="text" id="inputEmail" name="user[email]" required)
+			p.form-input
+				label(for="inputName") 用户名
+				input(type="text" id="inputEmail" name="user[name]" required)
+			p.form-input
+				label(for="inputPassword") 密码
+				input(type="password" id="inputPassword" name="user[password]" required)
+			p.form-input
+				input(type="submit" value="提交")

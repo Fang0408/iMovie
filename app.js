@@ -3,6 +3,8 @@ var port = process.env.PORT || 3000;
 var http = require('http');
 var path = require('path');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var mongoose = require('mongoose');
 var Movie = require('./models/movie');
 var User = require('./models/user');
@@ -14,7 +16,8 @@ mongoose.connect('mongodb://localhost/imovie')
 app.set('views','./views/pages');
 app.set('view engine','jade');
 app.use(express.static(path.join(__dirname,'public')));
-
+app.use(cookieParser());
+app.use(session({secret : 'iMovie'}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -169,7 +172,11 @@ app.get('/login',function(req,res){
 		title : '登录'
 	})
 })
-
+app.get('/register',function(req,res){
+	res.render('register',{
+		title : '注册'
+	})
+})
 app.post('/login',function(req,res){
 	var _user = req.body.user;
 	if(_user.email && _user.password){
@@ -178,13 +185,37 @@ app.post('/login',function(req,res){
 				console.log(err)
 				return
 			}
-			if(user && user.password == _user.password){
-				console.log('ok')
+			if(user){
+				user.comparePassword(_user.password,function(err,isMatch){
+					if(err){
+						console.log(err)
+					}
+					if(isMatch){
+						console.log('login success');
+					}else{
+						console.log('login unsuccess')
+					}
+				})
 				res.redirect('/')
 			}else{
 				res.redirect('/error')
 			}
 		});
 	}
+})
+
+app.post('/register',function(req,res){
+	var _user = req.body.user;
+	if(!_user.email || !_user.password || !_user.name){
+		return res.redirect('/error')
+	}
+	var userObj = new User(_user);
+	userObj.save(function(err,user){
+		if(err){
+			console.log(err);
+			return res.redirect('/error')
+		}
+		res.redirect('/admin')
+	})
 })
 http.createServer(app).listen(3000);

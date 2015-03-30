@@ -5,7 +5,17 @@ var SALT_WORK_FACTOR = 10;
 var UserSchema = new mongoose.Schema({
 	email : String,
 	name : String,
-	password : String
+	password : String,
+	meta : {
+		createAt : {
+			type : Date,
+			default : Date.now()
+		},
+		updateAt : {
+			type : Date,
+			default : Date.now()
+		}
+	}
 })
 
 UserSchema.pre('save',function(next){
@@ -28,9 +38,17 @@ UserSchema.pre('save',function(next){
 			next()
 		})
 	});
-	next()
 })
-
+UserSchema.methods = {
+	comparePassword : function(password,cb){
+		bcrypt.compare(password,this.password,function(err,isMatch){
+			if(err){
+				console.log(err)
+			}
+			cb(null,isMatch);
+		})
+	}
+}
 UserSchema.statics = {
 	fetch : function(cb){
 		return this
