@@ -48,6 +48,10 @@ app.get('/',function(req,res){
 		});
 	});
 });
+app.get(/^\/admin*/,function(req,res,next){
+	checkUserLogin(req,res,app);
+	next()
+})
 //电影详情页路由
 app.get('/movie/:id',function(req,res){
 	var id = req.params.id;
@@ -210,6 +214,7 @@ app.post('/login',function(req,res){
 					if(isMatch){
 						req.session.user = user;
 						app.locals.user = user;
+						res.cookie('username',user.name);
 						res.redirect('/admin')
 					}else{
 						res.redirect('/')
