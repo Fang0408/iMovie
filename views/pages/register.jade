@@ -1,7 +1,8 @@
 extends ../layout
 
 block content
-	.register-wrapper
+	.form-wrapper
+		h2.form-title 注册
 		form(method="post" action="/register")
 			p.form-input
 				label(for="inputEmail") 邮箱
@@ -12,5 +13,5 @@ block content
 			p.form-input
 				label(for="inputPassword") 密码
 				input(type="password" id="inputPassword" name="user[password]" required)
-			p.form-input
+			p.form-btn
 				input(type="submit" value="提交")

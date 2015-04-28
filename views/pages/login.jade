@@ -1,7 +1,8 @@
 extends ../layout
 
 block content
-	.login-wrapper
+	.form-wrapper
+		h2.form-title 登录
 		form(method="post" action="/login")
 			p.form-input
 				label(for="inputEmail") 邮箱
@@ -9,5 +10,34 @@ block content
 			p.form-input
 				label(for="inputPassword") 密码
 				input(type="password" id="inputPassword" name="user[password]" required)
-			p.form-input
-				input(type="submit" value="提交")
+			p.form-btn
+				input(type="submit" id="loginSubmit" value="提交")
+	script(type="text/javascript").
+		"use strict";
+		$('#loginSubmit').click(checkLogin);
+		function checkLogin() {
+			var user = {};
+			var checkObj = {};
+			user.email = $('#inputEmail').val();
+			user.password = $('#inputPassword').val();
+			$.ajax({
+				type : "POST",
+				async : false,
+				url : "/login/checkLogin",
+				dataType : "json",
+				data : user
+			})
+			.done(function(data) {
+				checkObj.ret = data.iRet;
+				checkObj.msg = data.sMsg;
+			})
+			if(checkObj !== undefined){
+				if(checkObj.ret !== 0){
+					alert(checkObj.msg);
+					return false;
+				}
+				return true;
+			}
+			alert('系统繁忙，请稍后再试！');
+			return false;
+		}
