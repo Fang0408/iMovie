@@ -20,12 +20,19 @@ block content
 			var checkObj = {};
 			user.email = $('#inputEmail').val();
 			user.password = $('#inputPassword').val();
+
+			if(!user.email || !user.password){
+				alert("请完整输入邮箱和密码");
+				return false;
+			}
 			$.ajax({
 				type : "POST",
 				async : false,
 				url : "/login/checkLogin",
 				dataType : "json",
-				data : user
+				data : {
+					user : user
+				}
 			})
 			.done(function(data) {
 				checkObj.ret = data.iRet;

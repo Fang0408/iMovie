@@ -151,7 +151,7 @@ body {
 }
 .form-title {
 	font-size: 30px; 
-	margin: 20px 0;
+	margin: 20px 0 40px;
 }
 .form-input {
 	clear: both;
@@ -162,7 +162,7 @@ body {
 .form-input label {
 	float: left;
 	display: inline;
-	width: 60px;
+	width: 80px;
 	text-align: left;
 	height: 100%;
 	line-height: 36px;
@@ -170,7 +170,7 @@ body {
 .form-input input {
 	float: left;
 	display: inline;
-	width: 528px;
+	width: 508px;
 	margin-left: 10px;
 	border: 1px solid #ccc;
 	height: 34px;
@@ -189,4 +189,5 @@ body {
 	border-radius: 3px;
 	height: 40px;
 	line-height: 40px;
+	cursor: pointer;
 }

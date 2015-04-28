@@ -9,9 +9,52 @@ block content
 				input(type="text" id="inputEmail" name="user[email]" required)
 			p.form-input
 				label(for="inputName") 用户名
-				input(type="text" id="inputEmail" name="user[name]" required)
+				input(type="text" id="inputName" name="user[name]" required)
 			p.form-input
 				label(for="inputPassword") 密码
 				input(type="password" id="inputPassword" name="user[password]" required)
+			p.form-input
+				label(for="inputPasswordConfirm") 密码确认
+				input(type="password" id="inputPasswordConfirm" name="user[passwordConfirm]" required)
 			p.form-btn
-				input(type="submit" value="提交")
+				input(type="submit" value="提交" id="registerSubmit")
+	script(type="text/javascript").
+		$('#registerSubmit').click(checkRegister);
+		function checkRegister() {
+			var user = {}, checkObj = {};
+			user.email = $('#inputEmail').val();
+			user.name = $('#inputName').val();
+			user.password = $('#inputPassword').val();
+			user.passwordConfirm = $('#inputPasswordConfirm').val();
+			if(!user.name || !user.name || !user.password || !user.passwordConfirm){
+				alert("请完整的输入邮箱、用户名和密码");
+				return false;
+			}
+
+			if(user.password !== user.passwordConfirm){
+				alert("请重新输入密码和密码确认并确保两者一致");
+				return false;
+			}
+			$.ajax({
+				type : "POST",
+				url : "/register/checkRegister",
+				async : false,
+				dataType : "json",
+				data : {
+					user : user
+				}
+			})
+			.done(function(data) {
+				checkObj.ret = data.iRet;
+				checkObj.msg = data.sMsg;
+			})
+			if(checkObj !== undefined){
+				if(checkObj.ret !== 0){
+					alert(checkObj.msg);
+					return false;
+				}
+				return true;
+			}
+			alert('系统繁忙，请稍后再试！');
+			return false;
+		}

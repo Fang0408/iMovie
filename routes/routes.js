@@ -194,37 +194,54 @@ var routes = function(app) {
 	})
 
 	app.post('/login/checkLogin',function(req,res) {
-		var _userEmail = req.body.email;
-		var _userPassword = req.body.password;
-		var _user = {
-			email : _userEmail,
-			password : _userPassword
-		}
-		console.log(_user);
+		var _user = req.body.user;
 		if(!_user.email || !_user.password){
-			res.json({"iRet" : -1, "sMsg" : "邮箱和密码不能为空"});
+			res.json({"iRet" : 1, "sMsg" : "请完整输入邮箱和密码"});
+			return;
 		}
 		User.findByEmail(_user.email, function(err, user) {
 			if(err){
-				res.json({"iRet" : 1, "sMsg" : "系统繁忙，请稍后再试"});
-				return
+				res.json({"iRet" : -1, "sMsg" : "系统繁忙，请稍后再试"});
+				return;
 			}
 			if(!user){
 				res.json({"iRet" : 2, "sMsg" : "邮箱或密码输入错误"});
-				return
+				return;
 			}
 			user.comparePassword(_user.password, function(err, isMatch) {
 				if(err){
-					res.json({"iRet" : 1, "sMsg" : "系统繁忙，请稍后再试"});
+					res.json({"iRet" : -1, "sMsg" : "系统繁忙，请稍后再试"});
+					return;
 				}
 				if(!isMatch){
 					res.json({"iRet" : 2, "sMsg" : "邮箱或密码输入错误"});
+					return;
 				}
 				res.json({"iRet" : 0, "sMsg" : "邮箱和密码匹配"});
+				return;
 			})
 		})
 	})
 
+	app.post('/register/checkRegister', function(req, res) {
+		var _user = req.body.user;
+		if(!_user.email || !_user.password || !_user.name){
+			res.json({"iRet" : 1, "sMsg" : "请完整输入邮箱、用户名和密码"});
+			return;
+		}
+		User.findByEmail(_user.email, function(err, user) {
+			if(err){
+				res.json({"iRet" : -1, "sMsg" : "系统繁忙，请稍后再试"});
+				return;
+			}
+			if(user){
+				res.json({"iRet" : 2, "sMsg" : "该邮箱已注册过"});
+				return;
+			}
+			res.json({"iRet" : 0, "sMsg" : "该邮箱可用"})
+			return;
+		});
+	})
 	app.post('/register',function(req,res){
 		var _user = req.body.user;
 		if(!_user.email || !_user.password || !_user.name){
