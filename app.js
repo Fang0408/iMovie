@@ -29,15 +29,14 @@ app.use(session({
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 app.use(function(req,res,next){
 	var user = req.session.user;
 	if(user){
-		console.log(user);
 		app.locals.user = user;
 	}
 	next()
 })
+app.locals.pretty = true;
 routes(app);
 
 http.createServer(app).listen(3000);

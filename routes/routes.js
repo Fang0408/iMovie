@@ -1,45 +1,15 @@
 var Movie = require('../models/Movie');
 var User = require('../models/User');
+var movie = require('../controllers/movie');
+var user = require('../controllers/user');
 var routes = function(app) {
 	//首页路由
-	app.get('/',function(req,res){
-		Movie.fetch(function(err,movies){
-			if(err){
-				console.log(err);
-			}
-			res.render('index',{
-				title : '首页',
-				movies : movies
-			});
-		});
-	});
-	app.get(/^\/admin*/,function(req,res,next){
-		var user = app.locals.user;
-		if(!user){
-			return res.redirect('/login');
-		}
-		next()
-	})
+	app.get('/', movie.list);
 	//电影详情页路由
-	app.get('/movie/:id',function(req,res){
-		var id = req.params.id;
-		Movie.findById(id,function(err,movie){
-			if(err){
-				console.log(err)
-			}
-			if(movie){
-				res.render('detail',{
-					title : movie.name + ' 详情',
-					movie : movie
-				});
-			}else{
-				res.redirect('/error')
-				return
-			}
-			
-		})
-		
-	});
+	app.get('/movie/:id', movie.detail);
+	//admin下的路由都需要判断是否有session
+	app.get(/^\/admin*/, user.checkUserSession, user.isSuperAdmin)
+	
 	//管理端电影列表页路由
 	app.get('/admin',function(req,res){
 		Movie.fetch(function(err,movies){
@@ -155,17 +125,25 @@ var routes = function(app) {
 		}
 	})
 	app.get('/login',function(req,res){
+		if(req.session.user){
+			res.redirect('/');
+		}
 		res.render('login',{
 			title : '登录'
 		})
 	})
-	app.get('/register',function(req,res){
+	app.get('/register',function(req, res) {
+		if(req.session.user){
+			res.redirect('/');
+			return;
+		}
 		res.render('register',{
 			title : '注册'
 		})
 	})
 	app.post('/login',function(req,res){
 		var _user = req.body.user;
+		var _redirectUrl = decodeURIComponent(req.body.redirectUrl);
 		if(_user.email && _user.password){
 			User.findByEmail(_user.email,function(err,user){
 				if(err){
@@ -180,8 +158,12 @@ var routes = function(app) {
 						if(isMatch){
 							req.session.user = user;
 							app.locals.user = user;
-							res.cookie('username',user.name);
-							res.redirect('/admin')
+							if(_redirectUrl != 'undefined'){
+								res.redirect(_redirectUrl);
+								return;
+							}else{
+								res.redirect('/admin')
+							}
 						}else{
 							res.redirect('/')
 						}

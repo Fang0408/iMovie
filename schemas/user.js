@@ -6,12 +6,20 @@ var UserSchema = new mongoose.Schema({
 	email : String,
 	name : String,
 	password : String,
+	level : {
+		type : Number,
+		default : 0
+	},
 	meta : {
 		createAt : {
 			type : Date,
 			default : Date.now()
 		},
 		updateAt : {
+			type : Date,
+			default : Date.now()
+		},
+		lastLoginAt : {
 			type : Date,
 			default : Date.now()
 		}

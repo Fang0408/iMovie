@@ -1,4 +1,4 @@
-*{
+html,body,div,pre,span,p,a,input,select,ul,ol,li,dt,dd,dl,h1,h2,h3,h4,h5,h6,label,section,article,table,tr,td,th{
 	margin: 0;
 	padding: 0;
 }
