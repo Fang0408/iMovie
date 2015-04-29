@@ -158,6 +158,11 @@ var routes = function(app) {
 						if(isMatch){
 							req.session.user = user;
 							app.locals.user = user;
+							
+							User.updateValue(user._id, {lastLoginAt: Date.now()}, function() {
+								console.log(1);
+							})
+							
 							if(_redirectUrl != 'undefined'){
 								res.redirect(_redirectUrl);
 								return;

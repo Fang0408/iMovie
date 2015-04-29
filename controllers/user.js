@@ -13,3 +13,13 @@ exports.isSuperAdmin = function(req, res, next) {
 		next();
 	}
 }
+
+exports.updateLoginDate = function(req, res, next) {
+	var user = req.session.user;
+	if(!user){
+		return res.redirect('/login');
+	}
+	user.updateValue(user._id, meta.lastLoginAt, Date.now(), function() {
+		console.log(1);
+	})
+}

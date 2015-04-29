@@ -48,30 +48,40 @@ UserSchema.pre('save',function(next){
 	});
 })
 UserSchema.methods = {
-	comparePassword : function(password,cb){
+	comparePassword : function(password,cb) {
 		bcrypt.compare(password,this.password,function(err,isMatch){
 			if(err){
 				console.log(err)
 			}
 			cb(null,isMatch);
 		})
+	},
+	updateValue : function(id, key, value, cb) {
+		var options = {};
+		var updates = {$set : {key : value}}
+		this.update({_id : id}, updates, options, cb);
 	}
 }
 UserSchema.statics = {
-	fetch : function(cb){
+	fetch : function(cb) {
 		return this
 			.find({}).sort('meta.updateAt')
 			.exec(cb)
 	},
-	findById : function(id,cb){
+	findById : function(id, cb) {
 		return this
 			.findOne({_id:id})
 			.exec(cb)
 	},
-	findByEmail : function(useremail,cb){
+	findByEmail : function(useremail, cb) {
 		return this
 			.findOne({email:useremail})
 			.exec(cb)
+	},
+	updateValue : function(id, obj, cb) {
+		var options = {};
+		var updates = {$set : obj};
+		return this.update({_id : id}, updates, options, cb);
 	}
 }
 
