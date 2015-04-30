@@ -1,6 +1,6 @@
 var mongoose = require('mongoose')
-
-var MovieSchema = new mongoose.Schema({
+var Schema = mongoose.Schema;
+var MovieSchema = new Schema({
 	doctor : String,
 	name : String,
 	language : String,

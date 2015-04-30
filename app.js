@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var mongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
+var moment = require('moment');
 var routes = require('./routes/routes');
 var Movie = require('./models/movie');
 var User = require('./models/user');
@@ -14,7 +15,7 @@ var underscore = require('underscore');
 var app = express();
 
 var DB_URL = 'mongodb://localhost/imovie';
-mongoose.connect(DB_URL)
+mongoose.connect(DB_URL);
 
 app.set('views','./views/pages');
 app.set('view engine','jade');

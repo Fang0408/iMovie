@@ -3,6 +3,12 @@ var User = require('../models/User');
 var movie = require('../controllers/movie');
 var user = require('../controllers/user');
 var routes = function(app) {
+	//把session存到locals里面
+	app.use(function(req, res, next) {
+		var user = req.session.user;
+		app.locals.user = user;
+		next();
+	})
 	//首页路由
 	app.get('/', movie.list);
 	//电影详情页路由
@@ -141,114 +147,17 @@ var routes = function(app) {
 			title : '注册'
 		})
 	})
-	app.post('/login',function(req,res){
-		var _user = req.body.user;
-		var _redirectUrl = decodeURIComponent(req.body.redirectUrl);
-		if(_user.email && _user.password){
-			User.findByEmail(_user.email,function(err,user){
-				if(err){
-					console.log(err)
-					return
-				}
-				if(user){
-					user.comparePassword(_user.password,function(err,isMatch){
-						if(err){
-							console.log(err)
-						}
-						if(isMatch){
-							req.session.user = user;
-							app.locals.user = user;
-							
-							User.updateValue(user._id, {lastLoginAt: Date.now()}, function() {
-								console.log(1);
-							})
-							
-							if(_redirectUrl != 'undefined'){
-								res.redirect(_redirectUrl);
-								return;
-							}else{
-								res.redirect('/admin')
-							}
-						}else{
-							res.redirect('/')
-						}
-					})
-				}else{
-					res.redirect('/error')
-				}
-			});
-		}
-	})
-
-	app.post('/login/checkLogin',function(req,res) {
-		var _user = req.body.user;
-		if(!_user.email || !_user.password){
-			res.json({"iRet" : 1, "sMsg" : "请完整输入邮箱和密码"});
-			return;
-		}
-		User.findByEmail(_user.email, function(err, user) {
-			if(err){
-				res.json({"iRet" : -1, "sMsg" : "系统繁忙，请稍后再试"});
-				return;
-			}
-			if(!user){
-				res.json({"iRet" : 2, "sMsg" : "邮箱或密码输入错误"});
-				return;
-			}
-			user.comparePassword(_user.password, function(err, isMatch) {
-				if(err){
-					res.json({"iRet" : -1, "sMsg" : "系统繁忙，请稍后再试"});
-					return;
-				}
-				if(!isMatch){
-					res.json({"iRet" : 2, "sMsg" : "邮箱或密码输入错误"});
-					return;
-				}
-				res.json({"iRet" : 0, "sMsg" : "邮箱和密码匹配"});
-				return;
-			})
-		})
-	})
-
-	app.post('/register/checkRegister', function(req, res) {
-		var _user = req.body.user;
-		if(!_user.email || !_user.password || !_user.name){
-			res.json({"iRet" : 1, "sMsg" : "请完整输入邮箱、用户名和密码"});
-			return;
-		}
-		User.findByEmail(_user.email, function(err, user) {
-			if(err){
-				res.json({"iRet" : -1, "sMsg" : "系统繁忙，请稍后再试"});
-				return;
-			}
-			if(user){
-				res.json({"iRet" : 2, "sMsg" : "该邮箱已注册过"});
-				return;
-			}
-			res.json({"iRet" : 0, "sMsg" : "该邮箱可用"})
-			return;
-		});
-	})
-	app.post('/register',function(req,res){
-		var _user = req.body.user;
-		if(!_user.email || !_user.password || !_user.name){
-			return res.redirect('/error')
-		}
-		var userObj = new User(_user);
-		userObj.save(function(err,user){
-			if(err){
-				console.log(err);
-				return res.redirect('/error')
-			}
-			res.redirect('/admin')
-		})
-	})
-
-	app.get('/logout',function(req,res){
-		delete req.session.user;
-		delete app.locals.user;
-		res.redirect('/');
-	})
+	
+	//用户登录
+	app.post('/login', user.userLogin);
+	//ajax检查登录相关信息
+	app.post('/login/checkLogin', user.ajaxCheckLogin);
+	//ajax检查注册信息是否有重复
+	app.post('/register/checkRegister', user.ajaxCheckRegister);
+	//用户注册，添加记录
+	app.post('/register', user.userRegister);
+	//退出登录，清楚session
+	app.get('/logout', user.userLogout);
 }
 
 module.exports = routes;
