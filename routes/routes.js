@@ -15,31 +15,10 @@ var routes = function(app) {
 	app.get('/movie/:id', movie.detail);
 	//admin下的路由都需要判断是否有session
 	app.get(/^\/admin*/, user.checkUserSession, user.isSuperAdmin)
-	
+
 	//管理端电影列表页路由
-	app.get('/admin',function(req,res){
-		Movie.fetch(function(err,movies){
-			if(err){
-				console.log(err);
-			}
-			res.render('list',{
-				title : '列表',
-				movies : movies
-			});
-		});
-	});
-	//管理端电影列表页路由
-	app.get('/admin/list',function(req,res){
-		Movie.fetch(function(err,movies){
-			if(err){
-				console.log(err);
-			}
-			res.render('list',{
-				title : '列表',
-				movies : movies
-			});
-		});
-	});
+	app.get('/admin', movie.adminMovieList);
+	app.get('/admin/list', movie.adminMovieList);
 
 	app.get('/admin/movie',function(req,res){
 		var movie = {
@@ -79,21 +58,10 @@ var routes = function(app) {
 			title : '出错啦'
 		})
 	})
-	app.delete('/admin/movie/delete',function(req,res){
-		var id = req.query.id;
-		if(id){
-			Movie.remove({_id : id},function(err,movie){
-				if(err){
-					console.log(err);
-					res.json({iRet : -1});
-				}else{
-					res.json({iRet : 0});
-				}
-			})
-		}
-		
-	})
-	app.post('/admin/movie/new',function(req,res){
+	//通过post删除电影
+	app.post('/admin/movie/delete', movie.deleteMovie);
+	app.post('/admin/movie/new', movie.addMovie);
+	/*app.post('/admin/movie/new',function(req,res){
 		var id = req.body.movie._id;
 		var movieObj = req.body.movie;
 		var _movie;
@@ -129,25 +97,12 @@ var routes = function(app) {
 				res.redirect('/movie/'+movie._id);
 			});
 		}
-	})
-	app.get('/login',function(req,res){
-		if(req.session.user){
-			res.redirect('/');
-		}
-		res.render('login',{
-			title : '登录'
-		})
-	})
-	app.get('/register',function(req, res) {
-		if(req.session.user){
-			res.redirect('/');
-			return;
-		}
-		res.render('register',{
-			title : '注册'
-		})
-	})
+	})*/
 	
+	//登录路由
+	app.get('/login', user.loginPage);
+	//注册路由
+	app.get('/register', user.registerPage);
 	//用户登录
 	app.post('/login', user.userLogin);
 	//ajax检查登录相关信息

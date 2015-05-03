@@ -27,8 +27,12 @@ block content
 				var thisMovie = $(this).parent().parent();
 				var index = thisMovie.attr('data-index');
 				$.ajax({
-					type : 'DELETE',
-					url : '/admin/movie/delete?id=' + index
+					type : 'POST',
+					url : '/admin/movie/delete',
+					dataType : 'json',
+					data : {
+						movieDelete : index
+					}
 				}).done(function(data){
 					if(data.iRet == 0){
 						thisMovie.remove();

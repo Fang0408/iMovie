@@ -99,3 +99,19 @@ exports.userLogout = function(req, res, next) {
 	delete req.session.user;
 	return res.redirect('/');
 }
+exports.loginPage = function(req, res, next) {
+	if(req.session.user){
+		return res.redirect('/');
+	}
+	return res.render('login', {
+		title : '登录',
+	});
+}
+exports.registerPage = function(req, res, next) {
+	if(req.session.user){
+		return res.redirect('/');
+	}
+	return res.render('register', {
+		title : '注册'
+	});
+}
