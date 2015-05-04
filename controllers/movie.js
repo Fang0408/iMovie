@@ -15,7 +15,7 @@ exports.list = function(req, res, next) {
 }
 //电影详情页
 exports.detail = function(req, res, next) {
-	var id = req.body.id;
+	var id = req.params.id;
 	Movie.findById(id, function(err, movie) {
 		if(err){
 			console.log(err);
@@ -59,14 +59,16 @@ exports.deleteMovie = function(req, res, next){
 			}
 			return res.json({iRet : 1, sMsg : "删除失败，电影不存在"});
 		})
+	}else{
+		return res.redirect('/error');
 	}
-	return res.redirect('/error');
+	
 }
 //新增电影记录或者修改相应id的电影记录
 exports.addMovie = function(req, res, next){
 	var _movie = req.body.movie;
 	var _id = req.body.movie._id;
-	if(_id){
+	if(_id !== 'undefined'){
 		//页面传入movie._id
 		Movie.findById(_id, function(err, movie) {
 			if(err){
@@ -74,7 +76,7 @@ exports.addMovie = function(req, res, next){
 			}
 			if(movie){
 				var newMovie = underscore.extend(movie, _movie);
-				Movie.save(function(err, movie) {
+				newMovie.save(function(err, movie) {
 					if(err){
 						return res.redirect('/error');
 					}
@@ -86,27 +88,28 @@ exports.addMovie = function(req, res, next){
 			}
 			return res.redirect('/error');
 		})
-	}
-	//页面没有movie._id，视为新增电影记录
-	var newMovie = new Movie({
-		doctor : _movie.doctor,
-		name : _movie.name,
-		language : _movie.language,
-		poster : _movie.poster,
-		flash : _movie.flash,
-		year : _movie.year,
-		country : _movie.country,
-		summary : _movie.summary
-	});
-	newMovie.save(function(err, movie) {
-		if(err){
+	}else{
+		//页面没有movie._id，视为新增电影记录
+		var newMovie = new Movie({
+			doctor : _movie.doctor,
+			name : _movie.name,
+			language : _movie.language,
+			poster : _movie.poster,
+			flash : _movie.flash,
+			year : _movie.year,
+			country : _movie.country,
+			summary : _movie.summary
+		});
+		newMovie.save(function(err, movie) {
+			if(err){
+				return res.redirect('/error');
+			}
+			if(movie){
+				return res.redirect('/movie/'+movie._id);
+			}
 			return res.redirect('/error');
-		}
-		if(movie){
-			return res.redirect('/movie/'+movie._id);
-		}
-		return res.redirect('/error');
-	})
+		})
+	}
 }
 //获取电影集合，并把movies传到callback内然后执行
 exports.moviesArray = function(callback) {
