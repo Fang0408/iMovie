@@ -2,6 +2,11 @@ extends ../layout
 
 block content
 	.movie-wrapper
+		input(type="hidden" id="movie_id" value="#{movie._id}")
+		if user
+			input(type="hidden" id="user_id" value="#{user._id}")
+		else
+			input(type="hidden" id="user_id" value="")
 		div.movie-player
 			embed(src="#{movie.flash}" allowFullScreen="true")
 		div.movie-detail
@@ -18,3 +23,37 @@ block content
 				dd #{movie.language}
 				dt 简介
 				dd #{movie.summary}
+	.comment-wrapper
+		if comments.length
+			div.comments
+				ul
+					each comment in comments
+						li
+							p #{comment.from.name}
+							p #{comment.content}
+		div.comment-form
+			textarea(id="comment_input")
+			a(href="javascript:void(0)" id="comment_submit") 提交评论
+	script(type="text/javascript").
+		$('#comment_submit').click(function() {
+			var comment = $('#comment_input').val();
+			var movieId = $('#movie_id').val();
+			var userId = $('#user_id').val();
+			$.ajax({
+				type : "POST",
+				url : "/comment/submit",
+				dataType : "json",
+				data : {
+					comment : {
+						content : comment,
+						movie : movieId,
+						from : userId
+					}
+				}
+			})
+			.done(function(data) {
+				if(data.iRet == 0){
+
+				}
+			})
+		});

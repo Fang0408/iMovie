@@ -2,6 +2,7 @@ extends ../layout
 
 block content
 	.form-wrapper
+		h2.form-title 编辑电影
 		form(method="post" action="/admin/movie/new")
 			input(type="hidden" name="movie[_id]" value='#{movie._id}')
 			p.form-input
@@ -28,5 +29,5 @@ block content
 			p.form-input
 				label(for="inputYear") 影片年份
 				input(type="text" id="inputYear" name="movie[year]" value='#{movie.year}' required)
-			p.form-input
+			p.form-btn
 				input(type="submit" value="提交")

@@ -5,10 +5,8 @@ exports.checkUserSession = function(req, res, next) {
 		return res.redirect('/login');
 	}
 	var lastLoginAt = new Date(user.meta.lastLoginAt);
-	console.log(lastLoginAt);
-	console.log(lastLoginAt.toString());
 	User.updateValue(user._id, {'meta.lastLoginAt': Date.now()}, function() {
-		console.log('update success.');
+		//console.log('update success.');
 	})
 	next();
 }
@@ -44,7 +42,7 @@ exports.ajaxCheckLogin = function(req, res, next) {
 		})
 	})
 }
-exports.ajaxCheckPost = function(req, res, next) {
+exports.ajaxCheckRegister = function(req, res, next) {
 	var _user = req.body.user;
 	if(!_user.email || !_user.password || !_user.name){
 		return res.json({"iRet" : 1, "sMsg" : "请完整输入邮箱、用户名和密码"});

@@ -1,7 +1,6 @@
-var Movie = require('../models/Movie');
-var User = require('../models/User');
 var movie = require('../controllers/movie');
 var user = require('../controllers/user');
+var comment = require('../controllers/comment');
 var routes = function(app) {
 	//把session存到locals里面
 	app.use(function(req, res, next) {
@@ -9,6 +8,7 @@ var routes = function(app) {
 		app.locals.user = user;
 		next();
 	})
+
 	//首页路由
 	app.get('/', movie.list);
 	//电影详情页路由
@@ -20,39 +20,10 @@ var routes = function(app) {
 	app.get('/admin', movie.adminMovieList);
 	app.get('/admin/list', movie.adminMovieList);
 
-	app.get('/admin/movie',function(req,res){
-		var movie = {
-			name : '',
-			doctor : '',
-			language : '',
-			poster : '',
-			flash : '',
-			year : '',
-			country : '',
-			summary : ''
-		}
-		res.render('new',{
-			title : '新增影片',
-			movie : movie
-		});
-	});
-	app.get('/admin/update/:id',function(req,res){
-		var id = req.params.id;
-		if(id){
-			Movie.findById(id,function(err,movie){
-				if(err){
-					console.log(err)
-					res.redirect('/error')
-				}else{
-					res.render('new',{
-						title : movie.name + ' 编辑',
-						movie : movie
-					})
-				}
-				
-			})
-		}
-	})
+	//新增影片路由
+	app.get('/admin/movie', movie.addMoviePage);
+	//编辑影片路由
+	app.get('/admin/update/:id', movie.editMoviePage);
 	app.get('/error',function(req,res){
 		res.render('error',{
 			title : '出错啦'
@@ -60,45 +31,9 @@ var routes = function(app) {
 	})
 	//通过post删除电影
 	app.post('/admin/movie/delete', movie.deleteMovie);
+	//新增电影or根据id编辑影片
 	app.post('/admin/movie/new', movie.addMovie);
-	/*app.post('/admin/movie/new',function(req,res){
-		var id = req.body.movie._id;
-		var movieObj = req.body.movie;
-		var _movie;
-		if(id !== 'undefined'){
-			Movie.findById(id,function(err,movie){
-				if(err){
-					console.log(err)
-				}else{
-					_movie = underscore.extend(movie,movieObj)
-					_movie.save(function(err,movie){
-						if(err){
-							console.log(err)
-						}
-						res.redirect('/movie/'+movie._id);
-					});
-				}
-			})
-		}else{
-			_movie = new Movie({
-				doctor : movieObj.doctor,
-				name : movieObj.name,
-				language : movieObj.language,
-				poster : movieObj.poster,
-				flash : movieObj.flash,
-				year : movieObj.year,
-				country : movieObj.country,
-				summary : movieObj.summary
-			});
-			_movie.save(function(err,movie){
-				if(err){
-					console.log(err);
-				}
-				res.redirect('/movie/'+movie._id);
-			});
-		}
-	})*/
-	
+
 	//登录路由
 	app.get('/login', user.loginPage);
 	//注册路由
@@ -113,6 +48,9 @@ var routes = function(app) {
 	app.post('/register', user.userRegister);
 	//退出登录，清楚session
 	app.get('/logout', user.userLogout);
+
+	//通过post提交电影评论
+	app.post('/comment/submit', comment.commentSubmit);
 }
 
 module.exports = routes;
