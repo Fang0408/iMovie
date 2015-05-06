@@ -4,6 +4,7 @@ var http = require('http');
 var path = require('path');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
+var multipart = require('connect-multiparty');
 var session = require('express-session');
 var mongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
@@ -30,13 +31,14 @@ app.use(session({
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(function(req,res,next){
+app.use(multipart());
+/*app.use(function(req,res,next){
 	var user = req.session.user;
 	if(user){
 		app.locals.user = user;
 	}
 	next()
-})
+})*/
 app.locals.pretty = true;
 routes(app);
 

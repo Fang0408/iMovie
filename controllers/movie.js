@@ -1,6 +1,8 @@
 var Movie = require('../models/movie');
 var Comment = require('../models/comment');
 var underscore = require('underscore');
+var fs = require('fs');
+var path = require('path');
 //首页电影列表
 exports.list = function(req, res, next) {
 	Movie.fetch(function(err, movies) {
@@ -70,7 +72,22 @@ exports.deleteMovie = function(req, res, next){
 	}else{
 		return res.redirect('/error');
 	}
-	
+}
+//上传电影海报
+exports.uploadPoster = function(req, res, next) {
+	var upload = req.files.posterImg;
+	var filePath = upload.path;
+	var originalName = upload.originalFilename;
+
+	fs.readFile(filePath, function(err, data) {
+		var timestamp = Date.now();
+		var fileType = upload.type.split('/')[1];
+
+		var newPath = path.join(__dirname, '../', 'public/uploads/posters/', timestamp+'.'+fileType);
+		fs.writeFile(newPath, data, function(err) {
+			console.log('done');
+		})
+	})
 }
 //新增电影记录或者修改相应id的电影记录
 exports.addMovie = function(req, res, next){
@@ -100,6 +117,7 @@ exports.addMovie = function(req, res, next){
 		})
 	}else{
 		//页面没有movie._id，视为新增电影记录
+
 		var newMovie = new Movie({
 			doctor : _movie.doctor,
 			name : _movie.name,

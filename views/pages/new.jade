@@ -3,7 +3,7 @@ extends ../layout
 block content
 	.form-wrapper
 		h2.form-title 编辑电影
-		form(method="post" action="/admin/movie/new")
+		form(method="post" action="/admin/movie/new" enctype="multipart/form-data")
 			input(type="hidden" name="movie[_id]" value='#{movie._id}')
 			p.form-input
 				label(for="inputName") 电影名称
@@ -20,6 +20,9 @@ block content
 			p.form-input
 				label(for="inputPoster") 海报地址
 				input(type="text" id="inputPoster" name="movie[poster]" value='#{movie.poster}' required)
+			p.form-input
+				label(for="posterImg") 海报上传
+				input(type="file" id="posterImg" name="posterImg")
 			p.form-input
 				label(for="inputFlash") 影片地址
 				input(type="text" id="inputFlash" name="movie[flash]" value='#{movie.flash}' required)

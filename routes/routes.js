@@ -32,7 +32,7 @@ var routes = function(app) {
 	//通过post删除电影
 	app.post('/admin/movie/delete', movie.deleteMovie);
 	//新增电影or根据id编辑影片
-	app.post('/admin/movie/new', movie.addMovie);
+	app.post('/admin/movie/new', movie.uploadPoster, movie.addMovie);
 
 	//登录路由
 	app.get('/login', user.loginPage);
