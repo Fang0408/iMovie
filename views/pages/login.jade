@@ -4,7 +4,7 @@ block content
 	.form-wrapper
 		h2.form-title 登录
 		form(method="post" action="/login")
-			//input(type="hidden" value="/movie/55067abacabe465018de70a3" name="redirectUrls")
+			input(type="hidden" id="redirectUrl" name="redirectUrl")
 			p.form-input
 				label(for="inputEmail") 邮箱
 				input(type="text" id="inputEmail" name="user[email]" required)
@@ -16,6 +16,10 @@ block content
 	script(type="text/javascript").
 		"use strict";
 		$('#loginSubmit').click(checkLogin);
+		var queryObj = getUrlParams();
+		var redirectUrl = queryObj['redirectUrl'];
+		$('#redirectUrl').val(redirectUrl);
+		console.log(redirectUrl);
 		function checkLogin() {
 			var user = {};
 			var checkObj = {};
@@ -48,4 +52,21 @@ block content
 			}
 			alert('系统繁忙，请稍后再试！');
 			return false;
+		}
+		function getUrlParams() {
+			var urlString = window.location.search;
+			var urlObj = {};
+			if(urlString.indexOf('?') == 0){
+				urlString = urlString.substr(1);
+			}
+			var urlArray = urlString.split('&');
+			for(var i = 0; i < urlArray.length; i++){
+				var item = urlArray[i];
+				var temp = item.replace(/[=|^==]/,'&');
+				var temp1 = temp.split('&');
+				var key = temp1[0];
+				var value = temp1[1];
+				urlObj[key] = value;
+			}
+			return urlObj;
 		}

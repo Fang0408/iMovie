@@ -1,8 +1,11 @@
 var User = require('../models/user');
+var url = require('url');
+var path = require('path');
 exports.checkUserSession = function(req, res, next) {
 	var user = req.session.user;
+	var redirectUrl = encodeURIComponent(req.url);
 	if(!user){
-		return res.redirect('/login');
+		return res.redirect('/login?redirectUrl='+redirectUrl);
 	}
 	var lastLoginAt = new Date(user.meta.lastLoginAt);
 	User.updateValue(user._id, {'meta.lastLoginAt': Date.now()}, function() {
@@ -74,6 +77,7 @@ exports.userRegister = function(req, res, next) {
 }
 exports.userLogin = function(req, res, next) {
 	var _user = req.body.user;
+	var _redirectUrl = req.body.redirectUrl;
 	if(!_user.email || !_user.password){
 		return res.redirect('/error');
 	}
@@ -87,6 +91,7 @@ exports.userLogin = function(req, res, next) {
 			}
 			if(isMatch){
 				req.session.user = user;
+				if(_redirectUrl)
 				return res.redirect('/');
 			}
 			return res.redirect('/error');

@@ -23,7 +23,6 @@ exports.detail = function(req, res, next) {
 		}
 		if(movie){
 			Comment.findByMovieId(id, function(err, comments) {
-				console.log(comments);
 				res.render('detail', {
 					title : movie.name,
 					movie : movie,
@@ -120,7 +119,6 @@ exports.addMovie = function(req, res, next){
 			}
 			return res.redirect('/error');
 		})
-<<<<<<< HEAD
 	}
 }
 exports.addMoviePage = function(req, res, next) {
@@ -141,44 +139,24 @@ exports.addMoviePage = function(req, res, next) {
 }
 exports.editMoviePage = function(req, res, next) {
 	var id = req.params.id;
-	Movie.findById(id, function(err, movie) {
-		if(err){
-			console.log(err);
-			return res.redirect('/error');
-		}
-		if(movie){
-			res.render('new',{
-				title : movie.name + ' 编辑',
-				movie : movie
-			})
-		}else{
-			return res.redirect('/error');
-		}
-	})
-=======
-	}else{
-		//页面没有movie._id，视为新增电影记录
-		var newMovie = new Movie({
-			doctor : _movie.doctor,
-			name : _movie.name,
-			language : _movie.language,
-			poster : _movie.poster,
-			flash : _movie.flash,
-			year : _movie.year,
-			country : _movie.country,
-			summary : _movie.summary
-		});
-		newMovie.save(function(err, movie) {
+	if(id !== 'undefined'){
+		Movie.findById(id, function(err, movie) {
 			if(err){
+				console.log(err);
 				return res.redirect('/error');
 			}
 			if(movie){
-				return res.redirect('/movie/'+movie._id);
+				res.render('new',{
+					title : movie.name + ' 编辑',
+					movie : movie
+				})
+			}else{
+				return res.redirect('/error');
 			}
-			return res.redirect('/error');
 		})
+	}else{
+		res.redirect('/error');
 	}
->>>>>>> origin/master
 }
 //获取电影集合，并把movies传到callback内然后执行
 exports.moviesArray = function(callback) {

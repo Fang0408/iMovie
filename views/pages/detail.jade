@@ -24,16 +24,23 @@ block content
 				dt 简介
 				dd #{movie.summary}
 	.comment-wrapper
-		if comments.length
-			div.comments
-				ul
-					each comment in comments
-						li
-							p #{comment.from.name}
-							p #{comment.content}
+		
+		div.comments#comments
+			ul
+				each comment in comments
+					li.comment-unit
+						div.avatar
+							if comment.avatar
+								img(src="#{comment.avatar}")
+							else
+								img(src="/avatars/avatar-default-120.jpg")
+						div.content
+							p.comment-from #{comment.from.name}
+							p.comment-detail #{comment.content}
+
 		div.comment-form
 			textarea(id="comment_input")
-			a(href="javascript:void(0)" id="comment_submit") 提交评论
+			a(href="javascript:void(0)" class="comment-submit" id="comment_submit") 发布
 	script(type="text/javascript").
 		$('#comment_submit').click(function() {
 			var comment = $('#comment_input').val();
@@ -53,7 +60,19 @@ block content
 			})
 			.done(function(data) {
 				if(data.iRet == 0){
-
+					$('#comment_input').val('');
+					var avatar = data.oComment.avatar;
+					var content = data.oComment.content;
+					var from = data.from;
+					console.log(avatar);
+					console.log(content);
+					console.log(from);
+					var html = '<li class="comment-unit"><div class="avatar"><img src="'+avatar+'"></div><div class="content"><p class="comment-from">'+from+'</p><p class="comment-detail">'+content+'</p></div></li>';
+					console.log(html);
+					$('#comments>ul').append(html);
+				}else{
+					alert(data.sMsg);
 				}
+
 			})
 		});

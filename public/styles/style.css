@@ -59,7 +59,7 @@ body {
 	text-decoration: none;
 	color: #fff;
 }
-.movies-wrapper, .movie-wrapper {
+.movies-wrapper, .movie-wrapper, .comment-wrapper {
 	width: 1000px;
 	padding-top: 10px;
 	margin: 0 auto;
@@ -190,4 +190,60 @@ body {
 	height: 40px;
 	line-height: 40px;
 	cursor: pointer;
+}
+.comment-form, .comments {
+	padding-top: 10px;
+	margin-left: 10px;
+}
+.comment-form textarea{
+	display: block;
+	border: 1px solid #ccc;
+	background: #fff;
+	width: 500px;
+	height: 80px;
+	resize:none;
+}
+.comment-submit {
+	display: block;
+	width: 120px;
+	border-radius: 3px;
+	height: 36px;
+	line-height: 36px;
+	background: rgb(73, 138, 242);
+	color: #fff;
+	text-align: center;
+	text-decoration: none;
+	margin-top: 20px;
+}
+.comment-unit .avatar{
+	display: inline-block;
+	width:80px;
+	height: 80px;
+	vertical-align: top;
+	width: 80px;
+}
+.content {
+	display: inline-block;
+	width: 600px;
+}
+.avatar img {
+	width:100%;
+}
+.comment-from {
+	font-weight: bold;
+	height: 26px;
+	line-height: 26px;
+	color: #888;
+}
+.comment-detail{
+	color: #000;
+	padding-top: 10px;
+}
+.comment-unit {
+	width:690px;
+	padding: 8px 0;
+	border-bottom: 1px solid #ccc;
+}
+.comment-unit:last-child{
+	border: 0;
 }

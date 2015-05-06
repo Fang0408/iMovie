@@ -10,6 +10,10 @@ var CommentSchema = new Schema({
 		type : ObjectId,
 		ref : 'User'
 	},
+	avatar : {
+		type : String,
+		default : "/avatars/avatar-default-120.jpg"
+	},
 	content : String,
 	createAt : {
 		type : Date,
