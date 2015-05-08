@@ -10,9 +10,9 @@ var CommentSchema = new Schema({
 		type : ObjectId,
 		ref : 'User'
 	},
-	avatar : {
-		type : String,
-		default : "/avatars/avatar-default-120.jpg"
+	reply : {
+		type : ObjectId,
+		ref : 'Comment'
 	},
 	content : String,
 	createAt : {
@@ -26,7 +26,7 @@ CommentSchema.statics = {
 		return this.find({}).sort(createAt).exec(cb);
 	},
 	findByMovieId : function(id, cb) {
-		return this.find({movie : id}).sort('createAt').populate('from','name').exec(cb);
+		return this.find({movie : id}).sort('createAt').populate('from','name avatar').populate('movie','name').exec(cb);
 	}
 }
 

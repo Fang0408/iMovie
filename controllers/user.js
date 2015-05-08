@@ -78,7 +78,6 @@ exports.userRegister = function(req, res, next) {
 exports.userLogin = function(req, res, next) {
 	var _user = req.body.user;
 	var _redirectUrl = req.body.redirectUrl;
-	console.log(_redirectUrl);
 	if(!_user.email || !_user.password){
 		return res.redirect('/error');
 	}
@@ -89,10 +88,12 @@ exports.userLogin = function(req, res, next) {
 		user.comparePassword(_user.password, function(err, isMatch) {
 			if(err){
 				console.log(err)
+				console.log(111);
 			}
 			if(isMatch){
 				req.session.user = user;
-				if(_redirectUrl !== 'undefined'){
+				console.log(user);
+				if(_redirectUrl !== 'undefined' && _redirectUrl != ''){
 					return res.redirect(decodeURIComponent(_redirectUrl));
 				}else{
 					return res.redirect('/');

@@ -59,7 +59,7 @@ body {
 	text-decoration: none;
 	color: #fff;
 }
-.movies-wrapper, .movie-wrapper, .comment-wrapper {
+.movies-wrapper, .movie-wrapper {
 	width: 1000px;
 	padding-top: 10px;
 	margin: 0 auto;
@@ -246,4 +246,10 @@ body {
 }
 .comment-unit:last-child{
 	border: 0;
+}
+.comment-wrapper {
+	width: 700px;
+}
+.comments>ul {
+	width: 100%;
 }

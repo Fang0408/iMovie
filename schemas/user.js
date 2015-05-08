@@ -11,6 +11,10 @@ var UserSchema = new Schema({
 		type : Number,
 		default : 0
 	},
+	avatar : {
+		type : String,
+		default : "/avatars/avatar-default-120.jpg"
+	},
 	meta : {
 		createAt : {
 			type : Date,

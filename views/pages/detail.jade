@@ -30,8 +30,8 @@ block content
 				each comment in comments
 					li.comment-unit
 						div.avatar
-							if comment.avatar
-								img(src="#{comment.avatar}")
+							if comment.from.avatar
+								img(src="#{user.avatar}")
 							else
 								img(src="/avatars/avatar-default-120.jpg")
 						div.content
