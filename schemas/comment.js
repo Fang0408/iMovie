@@ -2,18 +2,22 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.Types.ObjectId;
 var CommentSchema = new Schema({
+	user : {
+		type : ObjectId,
+		ref : 'User'
+	},
 	movie : {
 		type : ObjectId,
 		ref : 'Movie'
 	},
-	from : {
-		type : ObjectId,
-		ref : 'User'
-	},
-	reply : {
+	to : {
 		type : ObjectId,
 		ref : 'Comment'
 	},
+	reply : [{
+		type : ObjectId,
+		ref : 'Comment'
+	}],
 	content : String,
 	createAt : {
 		type : Date,
@@ -26,8 +30,11 @@ CommentSchema.statics = {
 		return this.find({}).sort(createAt).exec(cb);
 	},
 	findByMovieId : function(id, cb) {
-		return this.find({movie : id}).sort('createAt').populate('from','name avatar').populate('movie','name').exec(cb);
+		return this.find({movie : id}).sort('createAt').populate('user','name avatar').populate('movie','name').exec(cb);
+	},
+	findById : function(id, cb) {
+		return this.findOne({_id : id}).exec(cb);
 	}
 }
 
-module.exports = CommentSchema
+module.exports = CommentSchema;

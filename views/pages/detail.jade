@@ -23,26 +23,36 @@ block content
 				dd #{movie.language}
 				dt 简介
 				dd #{movie.summary}
-	.comment-wrapper
-		
-		div.comments#comments
-			ul
+	.wrapper-w1000
+		.comment-wrapper
+			.comments#comments
 				each comment in comments
-					li.comment-unit
+					div.comment-unit
+						a(href="javascript:void(0)" data-to="#{comment._id}" class="btn-reply") 回复
 						div.avatar
-							if comment.from.avatar
-								img(src="#{user.avatar}")
+							if comment.user.avatar
+								img(src="#{comment.user.avatar}")
 							else
 								img(src="/avatars/avatar-default-120.jpg")
 						div.content
-							p.comment-from #{comment.from.name}
+							p.comment-from #{comment.user.name}
 							p.comment-detail #{comment.content}
 
 		div.comment-form
 			textarea(id="comment_input")
 			a(href="javascript:void(0)" class="comment-submit" id="comment_submit") 发布
 	script(type="text/javascript").
-		$('#comment_submit').click(function() {
+		$('#comment_submit').click(submitComment);
+		//$('.btn-reply').click(setCommentConfig);
+		$('#comments').delegate('.btn-reply', 'click', setCommentConfig);
+		function setCommentConfig() {
+			var target = $(this);
+			var toId = target.attr('data-to');
+			$('#comment_submit').attr('data-to', toId);
+		}
+		function submitComment() {
+			var target = $(this);
+			var toId = target.attr('data-to');
 			var comment = $('#comment_input').val();
 			var movieId = $('#movie_id').val();
 			var userId = $('#user_id').val();
@@ -54,25 +64,25 @@ block content
 					comment : {
 						content : comment,
 						movie : movieId,
-						from : userId
+						user : userId,
+						to : toId
 					}
 				}
 			})
 			.done(function(data) {
 				if(data.iRet == 0){
 					$('#comment_input').val('');
-					var avatar = data.oComment.avatar;
+					var userAvatar = data.user.avatar;
 					var content = data.oComment.content;
-					var from = data.from;
-					console.log(avatar);
-					console.log(content);
-					console.log(from);
-					var html = '<li class="comment-unit"><div class="avatar"><img src="'+avatar+'"></div><div class="content"><p class="comment-from">'+from+'</p><p class="comment-detail">'+content+'</p></div></li>';
-					console.log(html);
-					$('#comments>ul').append(html);
+					var userName = data.user.name;
+					var toId = data.oComment._id;
+					var html = '<div class="comment-unit"><a href="javascript:void(0)" class="btn-reply" data-to="'+toId+'">回复</a><div class="avatar"><img src="'+userAvatar+'"></div><div class="content"><p class="comment-from">'+userName+'</p><p class="comment-detail">'+content+'</p></div></div>';
+					$('#comments').append(html);
+					if($('#comment_submit').attr('data-to')){
+						$('#comment_submit').removeAttr('data-to')
+					}
 				}else{
 					alert(data.sMsg);
 				}
-
 			})
-		});
+		}

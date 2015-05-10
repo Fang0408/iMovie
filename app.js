@@ -13,6 +13,7 @@ var routes = require('./routes/routes');
 var Movie = require('./models/movie');
 var User = require('./models/user');
 var underscore = require('underscore');
+var log4js = require('log4js');
 var app = express();
 
 var DB_URL = 'mongodb://localhost/imovie';
@@ -32,14 +33,27 @@ app.use(session({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(multipart());
-/*app.use(function(req,res,next){
-	var user = req.session.user;
-	if(user){
-		app.locals.user = user;
-	}
-	next()
-})*/
 app.locals.pretty = true;
-routes(app);
 
+log4js.configure({
+	appenders : [
+		{
+			type : 'console'
+		},
+		{
+			type : 'file',
+			filename : './logs/app.log',
+			maxLogSIze : 2048,
+			backups : 3,
+			category : 'normal'
+		}
+	]
+});
+var logger = log4js.getLogger('normal', {
+	level : 'auto'
+});
+logger.setLevel('INFO');
+app.use(log4js.connectLogger(logger));
+
+routes(app);
 http.createServer(app).listen(3000);

@@ -1,0 +1,4 @@
+[2015-05-10 21:33:55.570] [INFO] normal - 127.0.0.1 - - "GET / HTTP/1.1" 304 - "" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2351.3 Safari/537.36"
+[2015-05-10 21:37:14.595] [INFO] normal - 127.0.0.1 - - "GET /admin/list HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2351.3 Safari/537.36"
+[2015-05-10 21:37:22.031] [INFO] normal - 127.0.0.1 - - "GET /movie/5505a43fe68337681a08d258 HTTP/1.1" 200 6556 "http://localhost:3000/admin/list" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2351.3 Safari/537.36"
+[2015-05-10 21:39:21.157] [INFO] normal - 127.0.0.1 - - "POST /comment/submit HTTP/1.1" 200 316 "http://localhost:3000/movie/5505a43fe68337681a08d258" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2351.3 Safari/537.36"

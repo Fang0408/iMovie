@@ -25,7 +25,7 @@ exports.detail = function(req, res, next) {
 		}
 		if(movie){
 			Comment.findByMovieId(id, function(err, comments) {
-				console.log(comments)
+				//console.log(comments)
 				res.render('detail', {
 					title : movie.name,
 					movie : movie,
