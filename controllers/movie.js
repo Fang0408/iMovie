@@ -24,19 +24,14 @@ exports.detail = function(req, res, next) {
 			console.log(err);
 		}
 		if(movie){
-			Comment.findByMovieId(id, function(err, comments) {
-				//console.log(comments)
-				res.render('detail', {
-					title : movie.name,
-					movie : movie,
-					comments : comments
-				})
-			})
-			/*res.render('detail', {
-				title : movie.name + '详情',
-				movie : movie,
-				comments : movieComments
-			})*/
+			// Comment.findByMovieId(id, function(err, comments) {
+			// 	console.log(comments)
+			// 	res.render('detail', {
+			// 		title : movie.name,
+			// 		movie : movie,
+			// 		comments : comments
+			// 	})
+			// })
 		}else{
 			res.render('error', {
 				status : 404
@@ -177,13 +172,15 @@ exports.editMoviePage = function(req, res, next) {
 		res.redirect('/error');
 	}
 }
-//获取电影集合，并把movies传到callback内然后执行
-exports.moviesArray = function(callback) {
-	Movie.fetch(function(err, movies) {
-		if(err){
-			console.log(err);
+function getCommentsByMovie(movieId, cb) {
+	Comment.findByMovieId(movieId, function(err, comments) {
+		var newComments = [];
+		var len = comments.length;
+		for(var i = 0; i < len; i++){
+			var comment = comments[i];
+			if(comment.to){
+				
+			}
 		}
-		console.log(movies instanceof Array)
-		callback(movies);
 	})
-}
+} 

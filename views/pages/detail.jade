@@ -27,17 +27,29 @@ block content
 		.comment-wrapper
 			.comments#comments
 				each comment in comments
-					div.comment-unit
-						a(href="javascript:void(0)" data-to="#{comment._id}" class="btn-reply") 回复
-						div.avatar
-							if comment.user.avatar
-								img(src="#{comment.user.avatar}")
-							else
-								img(src="/avatars/avatar-default-120.jpg")
-						div.content
-							p.comment-from #{comment.user.name}
-							p.comment-detail #{comment.content}
-
+					if 1
+						div.comment-unit
+							a(href="javascript:void(0)" data-to="#{comment._id}" class="btn-reply") 回复
+							div.avatar
+								if comment.user.avatar
+									img(src="#{comment.user.avatar}")
+								else
+									img(src="/avatars/avatar-default-120.jpg")
+							div.content
+								p.comment-from #{comment.user.name}
+								p.comment-detail #{comment.content}
+							//
+								.children
+									div.comment-unit
+										a(href="javascript:void(0)" data-to="#{comment._id}" class="btn-reply") 回复
+										div.avatar
+											if comment.user.avatar
+												img(src="#{comment.user.avatar}")
+											else
+												img(src="/avatars/avatar-default-120.jpg")
+										div.content
+											p.comment-from #{comment.user.name}
+											p.comment-detail #{comment.content}
 		div.comment-form
 			textarea(id="comment_input")
 			a(href="javascript:void(0)" class="comment-submit" id="comment_submit") 发布

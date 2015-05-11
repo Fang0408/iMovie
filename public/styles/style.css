@@ -194,6 +194,7 @@ body {
 .comment-form, .comments {
 	padding-top: 10px;
 	margin-left: 10px;
+	clear: both;
 }
 .comment-form textarea{
 	display: block;
@@ -216,14 +217,21 @@ body {
 	margin-top: 20px;
 }
 .comment-unit .avatar{
-	display: inline-block;
+	float: left;
+	margin-right: 4px;
 	width:80px;
 	height: 80px;
-	vertical-align: top;
 }
-.content {
-	display: inline-block;
-	width: 600px;
+.comment-unit .content {
+	margin: 0 0 4px 0;
+	overflow: hidden;
+}
+.comment-unit .content::after {
+	content:"";
+	clear:both;
+}
+.comment-unit .children {
+	margin-left: 84px;
 }
 .avatar img {
 	width:100%;
@@ -239,10 +247,11 @@ body {
 	padding-top: 10px;
 }
 .comment-unit {
-	width:690px;
 	padding: 8px 0;
 	border-bottom: 1px solid #ccc;
 	position: relative;
+	clear: both;
+	overflow: hidden;
 }
 .comment-unit:last-child{
 	border: 0;
@@ -259,12 +268,9 @@ body {
 }
 .btn-reply {
 	position: absolute;
-	color: #0000FF;
+	color: #888;
 	right: 10px;
+	font-size: 10px;
 	top: 10px;
 	text-decoration: none;
-	display: none;
-}
-.comment-unit:hover>.btn-reply{
-	display: block;
 }
