@@ -24,14 +24,17 @@ exports.detail = function(req, res, next) {
 			console.log(err);
 		}
 		if(movie){
-			// Comment.findByMovieId(id, function(err, comments) {
-			// 	console.log(comments)
-			// 	res.render('detail', {
-			// 		title : movie.name,
-			// 		movie : movie,
-			// 		comments : comments
-			// 	})
-			// })
+			Comment.findByMovieId(id, function(err, comments) {
+				//console.log(comments)
+				getCommentsByMovie(id, function(cs) {
+					console.log(cs);
+				})
+				/*res.render('detail', {
+					title : movie.name,
+					movie : movie,
+					comments : comments
+				})*/
+			})
 		}else{
 			res.render('error', {
 				status : 404
@@ -175,12 +178,39 @@ exports.editMoviePage = function(req, res, next) {
 function getCommentsByMovie(movieId, cb) {
 	Comment.findByMovieId(movieId, function(err, comments) {
 		var newComments = [];
+		var replyComments = [];
 		var len = comments.length;
 		for(var i = 0; i < len; i++){
+			// (function(num) {
+			// 	var comment = comments[num];
+			// 	newComments.push(comment);
+			// 	if(comment.reply.length > 0){
+			// 		var replyLen = comment.reply.length;
+			// 		for(var j = 0; j < replyLen; i++){
+			// 			var commentReply = comment.reply[j];
+			// 			replyComments.push(commentReply);
+			// 			Comment.findById(commentReply, function(err, replyComment) {
+			// 				//replyComment是通过上一级的reply中的comment._id得到的具体comment
+			// 				newComments[i].replies.push(replyComment);
+			// 			})
+			// 		}
+			// 	}
+			// })(i);
 			var comment = comments[i];
-			if(comment.to){
-				
-			}
+				newComments.push(comment);
+				if(comment.reply.length > 0){
+					var replyLen = comment.reply.length;
+					// for(var j = 0; j < replyLen; i++){
+					// 	var commentReply = comment.reply[j];
+					// 	replyComments.push(commentReply);
+					// 	// Comment.findById(commentReply, function(err, replyComment) {
+					// 	// 	//replyComment是通过上一级的reply中的comment._id得到的具体comment
+					// 	// 	//newComments[i].replies.push(replyComment);
+					// 	// 	console.log(replyComment)
+					// 	// })
+					// }
+				}
 		}
+		cb(newComments);
 	})
 } 

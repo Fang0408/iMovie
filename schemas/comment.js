@@ -30,10 +30,16 @@ CommentSchema.statics = {
 		return this.find({}).sort(createAt).exec(cb);
 	},
 	findByMovieId : function(id, cb) {
-		return this.find({movie : id}).sort('createAt').populate('user','name avatar').populate('movie','name').exec(cb);
+		return this.find({movie : id}).populate('user','name avatar').populate('movie','name').exec(cb);
 	},
 	findById : function(id, cb) {
 		return this.findOne({_id : id}).exec(cb);
+	},
+	getById : function(id) {
+		return this.findOne({_id : id});
+	},
+	getCommentsByMovieId : function(id, cb) {
+		return this.find({movie : id}).populate('user','name avatar').populate('movie','name').exec(cb);
 	}
 }
 

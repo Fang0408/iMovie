@@ -60,11 +60,6 @@ UserSchema.methods = {
 			}
 			cb(null,isMatch);
 		})
-	},
-	updateValue : function(id, key, value, cb) {
-		var options = {};
-		var updates = {$set : {key : value}}
-		this.update({_id : id}, updates, options, cb);
 	}
 }
 UserSchema.statics = {
